@@ -211,10 +211,10 @@
         }
 
         .profile-info {
-    text-align: center;
-    margin-top: 50px; /* -75px yerine -50px yapıyoruz */
-    margin-bottom: 30px; /* Alt boşluğu da ekliyoruz */
-}
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
         .profile-avatar {
             width: 150px;
             height: 150px;
@@ -483,11 +483,11 @@
             </div>
             <div class="form-group">
                 <label for="username">Kullanıcı Adı</label>
-                <input type="text" id="username" class="form-control" placeholder="Zoroorj">
+                <input type="text" id="username" class="form-control" placeholder="admin">
             </div>
             <div class="form-group">
                 <label for="password">Şifre</label>
-                <input type="password" id="password" class="form-control" placeholder="Zoroorj.123">
+                <input type="password" id="password" class="form-control" placeholder="adminsifre">
                 <i class="fas fa-eye password-toggle" id="togglePassword"></i>
             </div>
             <button class="btn btn-block" id="loginBtn">Giriş Yap</button>
@@ -628,7 +628,7 @@
             const username = usernameInput.value;
             const password = passwordInput.value;
             
-            if (username === 'Zoroorj' && password === 'Zoroorj.123') {
+            if (username === 'admin' && password === 'adminsifre') {
                 isAdmin = true;
                 localStorage.setItem('isAdmin', 'true');
                 loginModal.classList.remove('active');
