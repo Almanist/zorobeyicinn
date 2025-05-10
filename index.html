@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Profil Sayfası</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --warning-color: #f8961e;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Admin Bar */
+        .admin-bar {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            z-index: 100;
+        }
+
+        .admin-login {
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .admin-login:hover {
+            background-color: white;
+            color: var(--dark-color);
+        }
+
+        .admin-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-indicator .badge {
+            background-color: var(--success-color);
+            color: var(--dark-color);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Login Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 400px;
+            transform: translateY(-20px);
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-header h2 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: var(--transition);
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            position: relative;
+            margin-bottom: 100px;
+        }
+
+        .banner {
+            height: 300px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+    text-align: center;
+    margin-top: 50px; /* -75px yerine -50px yapıyoruz */
+    margin-bottom: 30px; /* Alt boşluğu da ekliyoruz */
+}
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid white;
+            object-fit: cover;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+
+        .profile-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .profile-bio {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Content Tabs */
+        .content-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* About Section */
+        .about-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+
+        /* Media Gallery */
+        .media-upload {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(72, 149, 239, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .media-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .media-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .media-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+        }
+
+        .video-thumbnail i {
+            font-size: 40px;
+            z-index: 1;
+        }
+
+        .video-thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .media-info {
+            padding: 15px;
+        }
+
+        .media-date {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .delete-media {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--danger-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .media-card:hover .delete-media {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-name {
+                font-size: 24px;
+            }
+            
+            .media-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .media-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Bar -->
+    <div class="admin-bar">
+        <div class="container">
+            <div class="admin-indicator">
+                <button class="admin-login" id="adminLoginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Admin Girişi
+                </button>
+                <span class="badge" id="adminBadge" style="display: none;">
+                    <i class="fas fa-user-shield"></i> Admin Modu
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Admin Girişi</h2>
+                <p>Yönetici paneli için giriş yapın</p>
+            </div>
+            <div class="form-group">
+                <label for="username">Kullanıcı Adı</label>
+                <input type="text" id="username" class="form-control" placeholder="Zoroorj">
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" class="form-control" placeholder="Zoroorj.123">
+                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+            </div>
+            <button class="btn btn-block" id="loginBtn">Giriş Yap</button>
+        </div>
+    </div>
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="banner">
+            <img src="https://scontent-muc2-1.xx.fbcdn.net/v/t1.15752-9/494829033_946799427407113_8981687147827827651_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=0024fc&_nc_ohc=yKUWTOqclycQ7kNvwE6q9oC&_nc_oc=AdmZwEnEidY2TmkLazIt362guixqzuZeloXhSQ1vlnVZ4Rm51pbd5-H113kPXE1F3jgK1gIHUa_nYIaZw1nlx5zp&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-muc2-1.xx&oh=03_Q7cD2QHTkf5yM-SIZj5uL7MmlknkaRXxTmejSXOpXpAcXOvGSA&oe=6846F653" alt="Banner">
+        </div>
+        
+        <div class="container">
+            <div class="profile-info">
+                <img src="https://scontent-muc2-1.xx.fbcdn.net/v/t1.15752-9/493041706_1022144473348182_4045494816074349297_n.jpg?stp=dst-jpg_s480x480_tt6&_nc_cat=109&ccb=1-7&_nc_sid=0024fc&_nc_ohc=g-5pu9ia18UQ7kNvwHFDM1F&_nc_oc=Adm2SO2QjUS-D0alz4gp-j5zY9kD2kGaRmXfLWyvvH1SAPyazIx2NKt0bmxxG-vs6_8HvUoIV6wJOk-0gTTphPjw&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-muc2-1.xx&oh=03_Q7cD2QHNrBL83I9rIPpzbuhJ6AomjuzQXPmG-B3d4aOzZB0X9A&oe=6846FD81" alt="Profil Resmi" class="profile-avatar" id="profilePic">
+                <h1 class="profile-name" id="profileName">𝚉𝙾𝚁𝙾𝙾𝚁𝙹 †</h1>
+                <p class="profile-bio" id="profileBio">
+𝙴𝚗𝚐𝚕𝚊𝚗𝚍🇬🇧/𝚃𝚞𝚛𝚔𝚎𝚢🇹🇷
+ʙᴇɴ ᴘɪsʟɪɢɪɴ ᴛᴇᴋɪʏɪᴍ sɪᴢᴅᴇ ᴏʏʟᴇ ᴀᴍᴀ sɪᴢ ʙᴜɴᴜ sᴏʏʟᴇʏᴇᴍᴇᴢsɪɴɪᴢ🦠
+📞ᴄᴀɢʀɪ,ꜱᴍꜱ,ᴡʜᴀᴛꜱᴀᴘᴘ; +𝟒𝟒 𝟕𝟕𝟑𝟔 𝟐𝟏𝟔𝟖𝟗𝟑
+📱𝘐𝘯𝘴𝘵𝘢;@𝚝𝚑𝚎𝚣𝚘𝚛𝚘𝚋𝚎𝚢</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Content Tabs -->
+        <div class="content-tabs">
+            <button class="tab-btn active" data-tab="about">Hakkımda</button>
+            <button class="tab-btn" data-tab="gallery">Galeri</button>
+        </div>
+
+        <!-- About Tab -->
+        <div class="tab-content active" id="about">
+            <div class="about-section">
+                <h2 class="section-title">Ben Kimim?</h2>
+                <p>Merhaba, ben thezorobey SANALIN sahibiyim</p>
+                
+                <h2 class="section-title" style="margin-top: 30px;">Beceriler</h2>
+                <ul style="list-style-type: none; columns: 2;">
+                    <li><i class="fas fa-check" style="color: var(--success-color);"></i> OPEN</li>
+                    <li><i class="fas fa-check" style="color: var(--success-color);"></i> BAN</li>
+                    <li><i class="fas fa-check" style="color: var(--success-color);"></i> SORGU</li>
+                    <li><i class="fas fa-check" style="color: var(--success-color);"></i> SPAM</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Gallery Tab -->
+        <div class="tab-content" id="gallery">
+            <!-- Admin Upload Section (only visible for admin) -->
+            <div class="media-upload" id="adminUploadSection" style="display: none;">
+                <h2 class="section-title">Medya Yükle</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p>Dosyalarınızı sürükleyip bırakın veya tıklayarak seçin</p>
+                    <p class="text-muted">(JPG, PNG, GIF, MP4 - Max 10MB)</p>
+                </div>
+                <input type="file" id="mediaUpload" accept="image/*,video/*" multiple style="display: none;">
+                <button class="btn" id="uploadBtn" style="display: none;">Yükle</button>
+            </div>
+
+            <!-- Media Gallery -->
+            <div class="media-gallery" id="mediaContainer">
+                <!-- Media items will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminBadge = document.getElementById('adminBadge');
+        const loginModal = document.getElementById('loginModal');
+        const loginBtn = document.getElementById('loginBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const adminUploadSection = document.getElementById('adminUploadSection');
+        const uploadArea = document.getElementById('uploadArea');
+        const mediaUpload = document.getElementById('mediaUpload');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const mediaContainer = document.getElementById('mediaContainer');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // State
+        let isAdmin = false;
+        let mediaItems = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if admin is logged in
+            isAdmin = localStorage.getItem('isAdmin') === 'true';
+            updateAdminUI();
+            
+            // Load media items
+            loadMedia();
+            
+            // Setup tab switching
+            setupTabs();
+            
+            // Setup drag and drop
+            setupDragAndDrop();
+            
+            // Setup password toggle
+            setupPasswordToggle();
+        });
+
+        // Password Toggle
+        function setupPasswordToggle() {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+
+        // Admin Login Button
+        adminLoginBtn.addEventListener('click', (e) => {
+            if (isAdmin) {
+                // Logout if already admin
+                isAdmin = false;
+                localStorage.removeItem('isAdmin');
+                updateAdminUI();
+                showToast('Admin modundan çıkış yapıldı', 'success');
+            } else {
+                // Show login modal
+                loginModal.classList.add('active');
+            }
+        });
+
+        // Login Button
+        loginBtn.addEventListener('click', () => {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+            
+            if (username === 'Zoroorj' && password === 'Zoroorj.123') {
+                isAdmin = true;
+                localStorage.setItem('isAdmin', 'true');
+                loginModal.classList.remove('active');
+                updateAdminUI();
+                showToast('Admin moduna giriş yapıldı', 'success');
+            } else {
+                showToast('Hatalı kullanıcı adı veya şifre!', 'error');
+            }
+        });
+
+        // Close modal when clicking outside
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.classList.remove('active');
+            }
+        });
+
+        // Upload Area Click
+        uploadArea.addEventListener('click', () => {
+            mediaUpload.click();
+        });
+
+        // Media Upload Change
+        mediaUpload.addEventListener('change', () => {
+            if (mediaUpload.files.length > 0) {
+                uploadBtn.style.display = 'block';
+            } else {
+                uploadBtn.style.display = 'none';
+            }
+        });
+
+        // Upload Button
+        uploadBtn.addEventListener('click', handleUpload);
+
+        // Update Admin UI
+        function updateAdminUI() {
+            if (isAdmin) {
+                adminLoginBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Çıkış Yap';
+                adminBadge.style.display = 'inline-block';
+                adminUploadSection.style.display = 'block';
+            } else {
+                adminLoginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Admin Girişi';
+                adminBadge.style.display = 'none';
+                adminUploadSection.style.display = 'none';
+                uploadBtn.style.display = 'none';
+            }
+        }
+
+        // Setup Tabs
+        function setupTabs() {
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    btn.classList.add('active');
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        // Setup Drag and Drop
+        function setupDragAndDrop() {
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            // Handle dropped files
+            uploadArea.addEventListener('drop', handleDrop, false);
+        }
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight() {
+            uploadArea.style.borderColor = 'var(--accent-color)';
+            uploadArea.style.backgroundColor = 'rgba(72, 149, 239, 0.1)';
+        }
+
+        function unhighlight() {
+            uploadArea.style.borderColor = '#ddd';
+            uploadArea.style.backgroundColor = 'transparent';
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            mediaUpload.files = files;
+            
+            if (files.length > 0) {
+                uploadBtn.style.display = 'block';
+            }
+        }
+
+        // Handle Upload
+        function handleUpload() {
+            if (!isAdmin) return;
+            
+            const files = mediaUpload.files;
+            if (files.length === 0) {
+                showToast('Lütfen en az bir dosya seçin!', 'warning');
+                return;
+            }
+            
+            // Get existing media items or initialize empty array
+            mediaItems = JSON.parse(localStorage.getItem('mediaItems')) || [];
+            
+            let uploadCount = 0;
+            
+            Array.from(files).forEach(file => {
+                // Check file type
+                if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+                    showToast(`${file.name} geçersiz dosya türü!`, 'error');
+                    return;
+                }
+                
+                // Check file size (max 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    showToast(`${file.name} çok büyük (max 10MB)`, 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const mediaType = file.type.startsWith('image/') ? 'image' : 'video';
+                    const mediaItem = {
+                        type: mediaType,
+                        url: e.target.result,
+                        name: file.name,
+                        timestamp: new Date().getTime()
+                    };
+                    
+                    mediaItems.push(mediaItem);
+                    localStorage.setItem('mediaItems', JSON.stringify(mediaItems));
+                    renderMediaItem(mediaItem);
+                    
+                    uploadCount++;
+                    if (uploadCount === files.length) {
+                        showToast(`${uploadCount} dosya başarıyla yüklendi`, 'success');
+                        uploadBtn.style.display = 'none';
+                        mediaUpload.value = '';
+                    }
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Load Media
+        function loadMedia() {
+            mediaItems = JSON.parse(localStorage.getItem('mediaItems')) || [];
+            mediaContainer.innerHTML = '';
+            
+            if (mediaItems.length === 0) {
+                mediaContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Henüz hiç medya yüklenmedi.</p>';
+                return;
+            }
+            
+            // Sort by timestamp (newest first)
+            mediaItems.sort((a, b) => b.timestamp - a.timestamp);
+            
+            mediaItems.forEach(item => {
+                renderMediaItem(item);
+            });
+        }
+
+        // Render Media Item
+        function renderMediaItem(item) {
+            const mediaElement = document.createElement('div');
+            mediaElement.className = 'media-card';
+            
+            if (item.type === 'image') {
+                mediaElement.innerHTML = `
+                    <img src="${item.url}" alt="${item.name}" class="media-thumbnail">
+                    <div class="media-info">
+                        <p>${item.name}</p>
+                        <p class="media-date">${formatDate(item.timestamp)}</p>
+                    </div>
+                    ${isAdmin ? '<div class="delete-media" data-id="${item.timestamp}"><i class="fas fa-trash"></i></div>' : ''}
+                `;
+            } else {
+                mediaElement.innerHTML = `
+                    <div class="video-thumbnail">
+                        <i class="fas fa-play"></i>
+                        <video src="${item.url}" style="display: none;"></video>
+                    </div>
+                    <div class="media-info">
+                        <p>${item.name}</p>
+                        <p class="media-date">${formatDate(item.timestamp)}</p>
+                    </div>
+                    ${isAdmin ? '<div class="delete-media" data-id="${item.timestamp}"><i class="fas fa-trash"></i></div>' : ''}
+                `;
+            }
+            
+            mediaContainer.prepend(mediaElement);
+            
+            // Add click event for video thumbnails
+            if (item.type === 'video') {
+                const thumbnail = mediaElement.querySelector('.video-thumbnail');
+                const video = mediaElement.querySelector('video');
+                
+                thumbnail.addEventListener('click', () => {
+                    if (video.style.display === 'none') {
+                        video.style.display = 'block';
+                        video.controls = true;
+                        video.play();
+                    } else {
+                        video.style.display = 'none';
+                        video.controls = false;
+                        video.pause();
+                    }
+                });
+            }
+            
+            // Add delete event if admin
+            if (isAdmin) {
+                const deleteBtn = mediaElement.querySelector('.delete-media');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const timestamp = parseInt(deleteBtn.getAttribute('data-id'));
+                        deleteMediaItem(timestamp);
+                    });
+                }
+            }
+        }
+
+        // Delete Media Item
+        function deleteMediaItem(timestamp) {
+            if (!isAdmin) return;
+            
+            if (confirm('Bu medyayı silmek istediğinize emin misiniz?')) {
+                mediaItems = mediaItems.filter(item => item.timestamp !== timestamp);
+                localStorage.setItem('mediaItems', JSON.stringify(mediaItems));
+                loadMedia();
+                showToast('Medya başarıyla silindi', 'success');
+            }
+        }
+
+        // Format Date
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('tr-TR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Show Toast Notification
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-message">${message}</div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add toast styles dynamically
+        const toastStyles = document.createElement('style');
+        toastStyles.innerHTML = `
+            .toast {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: var(--border-radius);
+                color: white;
+                font-weight: 500;
+                box-shadow: var(--box-shadow);
+                transform: translateY(100px);
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 1000;
+                max-width: 300px;
+            }
+            
+            .toast.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .toast-success {
+                background-color: var(--success-color);
+            }
+            
+            .toast-error {
+                background-color: var(--danger-color);
+            }
+            
+            .toast-warning {
+                background-color: var(--warning-color);
+            }
+        `;
+        document.head.appendChild(toastStyles);
+    </script>
+</body>
+</html>
